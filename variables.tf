@@ -80,3 +80,19 @@ variable "flow_log_cloudwatch_log_group_kms_key_id" {
   type    = string
   default = null
 }
+
+variable "network_firewall_cloudwatch_log_group_retention_in_days" {
+  description = "Number of days you want to retain log events."
+  type        = number
+  default     = null
+}
+
+variable "network_firewall_cloudwatch_log_group_kms_key_id" {
+  type    = string
+  default = null
+}
+
+variable "network_firewall_rules_file" {
+  type    = string
+  default = "example.rules"
+}
