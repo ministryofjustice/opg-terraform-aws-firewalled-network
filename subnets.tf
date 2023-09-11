@@ -1,7 +1,7 @@
 locals {
   subnet_cidr_block_netnum = {
-    public      = 20
-    firewall    = 45
+    public      = 45
+    firewall    = 65
     application = 95
     data        = 115
   }
