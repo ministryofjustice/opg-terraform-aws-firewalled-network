@@ -48,6 +48,9 @@ jobs:
           PRERELEASE_SUFFIX: ${{ env.BRANCH_NAME }}
           RELEASE_BRANCHES: main
           WITH_V: true
+      - name: Send tag to summary
+        id: tag_to_summary
+        run: echo "The tag for this run -  ${{ steps.bump_version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
     outputs:
       version_tag: ${{steps.bump_version.outputs.tag}}
   terraform_validation:
