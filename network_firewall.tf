@@ -1,32 +1,32 @@
-# resource "aws_networkfirewall_firewall" "main" {
-#   name                = local.name-prefix
-#   firewall_policy_arn = aws_networkfirewall_firewall_policy.main.arn
-#   vpc_id              = aws_vpc.main.id
-#   subnet_mapping {
-#     subnet_id = aws_subnet.firewall.id
-#   }
-# }
+resource "aws_networkfirewall_firewall" "main" {
+  name                = local.name-prefix
+  firewall_policy_arn = aws_networkfirewall_firewall_policy.main.arn
+  vpc_id              = aws_vpc.main.id
+  subnet_mapping {
+    subnet_id = aws_subnet.firewall.id
+  }
+}
 
-# resource "aws_networkfirewall_firewall_policy" "main" {
-#   name = "main"
+resource "aws_networkfirewall_firewall_policy" "main" {
+  name = "main"
 
-#   firewall_policy {
-#     policy_variables {
-#       rule_variables {
-#         key = "HOME_NET"
-#         ip_set {
-#           definition = ["10.0.0.0/16", "10.1.0.0/24"]
-#         }
-#       }
-#     }
-#     stateless_default_actions          = ["aws:pass"]
-#     stateless_fragment_default_actions = ["aws:drop"]
-#     stateless_rule_group_reference {
-#       priority     = 1
-#       resource_arn = aws_networkfirewall_rule_group.main.arn
-#     }
-#   }
-# }
+  firewall_policy {
+    policy_variables {
+      rule_variables {
+        key = "HOME_NET"
+        ip_set {
+          definition = [var.cidr]
+        }
+      }
+    }
+    stateless_default_actions          = ["aws:pass"]
+    stateless_fragment_default_actions = ["aws:drop"]
+    stateless_rule_group_reference {
+      priority     = 1
+      resource_arn = aws_networkfirewall_rule_group.main.arn
+    }
+  }
+}
 
 resource "aws_networkfirewall_rule_group" "main" {
   capacity = 100
