@@ -11,14 +11,14 @@ resource "aws_networkfirewall_firewall_policy" "main" {
   name = "main"
 
   firewall_policy {
-    policy_variables {
-      rule_variables {
-        key = "HOME_NET"
-        ip_set {
-          definition = [var.cidr]
-        }
-      }
-    }
+    # policy_variables {
+    #   rule_variables {
+    #     key = "HOME_NET"
+    #     ip_set {
+    #       definition = [var.cidr]
+    #     }
+    #   }
+    # }
     stateless_default_actions          = ["aws:pass"]
     stateless_fragment_default_actions = ["aws:drop"]
     stateless_rule_group_reference {
