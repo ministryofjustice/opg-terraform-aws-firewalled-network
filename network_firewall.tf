@@ -12,19 +12,13 @@ resource "aws_networkfirewall_firewall_policy" "main" {
   name = "main"
 
   firewall_policy {
-    # policy_variables {
-    #   rule_variables {
-    #     key = "HOME_NET"
-    #     ip_set {
-    #       definition = [var.cidr]
-    #     }
-    #   }
-    # }
-    stateless_default_actions          = ["aws:pass"]
-    stateless_fragment_default_actions = ["aws:drop"]
-    stateless_rule_group_reference {
-      priority     = 1
-      resource_arn = aws_networkfirewall_rule_group.main.arn
+    stateful_default_actions           = ["aws:drop_established"]
+    stateless_default_actions          = ["aws:forward_to_sfe"]
+    stateless_fragment_default_actions = ["aws:forward_to_sfe"]
+
+    stateful_engine_options {
+      rule_order              = "STRICT_ORDER"
+      stream_exception_policy = "DROP"
     }
   }
 }
