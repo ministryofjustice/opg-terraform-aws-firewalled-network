@@ -9,8 +9,7 @@ resource "aws_networkfirewall_firewall" "main" {
 }
 
 resource "aws_networkfirewall_firewall_policy" "main" {
-  count = 3
-  name  = "main"
+  name = "main"
 
   firewall_policy {
     # policy_variables {
@@ -25,7 +24,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
     stateless_fragment_default_actions = ["aws:drop"]
     stateless_rule_group_reference {
       priority     = 1
-      resource_arn = aws_networkfirewall_rule_group.main[count.index].arn
+      resource_arn = aws_networkfirewall_rule_group.main.arn
     }
   }
 }
