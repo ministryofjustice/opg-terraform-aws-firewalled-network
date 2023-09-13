@@ -102,7 +102,7 @@ resource "aws_route" "application_nat_gateway" {
   count                  = 3
   route_table_id         = element(aws_route_table.application.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.gw.*.id, count.index)
+  vpc_endpoint_id        = aws_networkfirewall_firewall.main[count.index].firewall_status.sync_states.attachment.endpoint_id
 
   timeouts {
     create = "5m"
