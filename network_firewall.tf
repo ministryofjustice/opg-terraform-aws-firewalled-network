@@ -36,15 +36,16 @@ resource "aws_cloudwatch_log_group" "network_firewall" {
   kms_key_id        = var.network_firewall_cloudwatch_log_group_kms_key_id
 }
 
-# resource "aws_networkfirewall_logging_configuration" "main" {
-#   firewall_arn = aws_networkfirewall_firewall.main.arn
-#   logging_configuration {
-#     log_destination_config {
-#       log_destination = {
-#         logGroup = aws_cloudwatch_log_group.network_firewall.name
-#       }
-#       log_destination_type = "CloudWatchLogs"
-#       log_type             = "FLOW"
-#     }
-#   }
-# }
+resource "aws_networkfirewall_logging_configuration" "main" {
+  count        = 3
+  firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
+  logging_configuration {
+    log_destination_config {
+      log_destination = {
+        logGroup = aws_cloudwatch_log_group.network_firewall.name
+      }
+      log_destination_type = "CloudWatchLogs"
+      log_type             = "FLOW"
+    }
+  }
+}
