@@ -98,11 +98,23 @@ resource "aws_route_table" "application" {
   tags   = { Name = "application-route-table" }
 }
 
+data "aws_vpc_endpoint" "network_firewall" {
+  count  = 3
+  vpc_id = aws_vpc.main.id
+  state  = "available"
+
+  tags = {
+    Firewall                  = aws_networkfirewall_firewall.main[count.index].arn
+    AWSNetworkFirewallManaged = "true"
+  }
+}
+
 resource "aws_route" "application_nat_gateway" {
   count                  = 3
   route_table_id         = element(aws_route_table.application.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  vpc_endpoint_id        = aws_networkfirewall_firewall.main[count.index].firewall_status.sync_states.attachment.endpoint_id
+  vpc_endpoint_id        = data.aws_vpc_endpoint.network_firewall[count.index].id
+  # vpc_endpoint_id        = aws_networkfirewall_firewall.main[count.index].firewall_status.sync_states.attachment.endpoint_id
 
   timeouts {
     create = "5m"
