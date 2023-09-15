@@ -20,6 +20,9 @@ resource "aws_networkfirewall_firewall_policy" "main" {
       rule_order              = "STRICT_ORDER"
       stream_exception_policy = "DROP"
     }
+    stateful_rule_group_reference {
+      resource_arn = aws_networkfirewall_rule_group.main.arn
+    }
   }
 }
 
@@ -49,3 +52,4 @@ resource "aws_networkfirewall_logging_configuration" "main" {
     }
   }
 }
+
