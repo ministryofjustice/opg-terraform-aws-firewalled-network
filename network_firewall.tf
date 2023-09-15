@@ -12,16 +12,15 @@ resource "aws_networkfirewall_firewall_policy" "main" {
   name = "main"
 
   firewall_policy {
-    stateful_default_actions           = ["aws:drop_established"]
     stateless_default_actions          = ["aws:forward_to_sfe"]
     stateless_fragment_default_actions = ["aws:forward_to_sfe"]
 
     stateful_engine_options {
-      # rule_order              = "STRICT_ORDER"
+      rule_order              = "DEFAULT_ACTION_ORDER"
       stream_exception_policy = "DROP"
     }
     stateful_rule_group_reference {
-      priority     = 1
+      priority     = 0
       resource_arn = aws_networkfirewall_rule_group.main.arn
     }
   }
@@ -53,4 +52,3 @@ resource "aws_networkfirewall_logging_configuration" "main" {
     }
   }
 }
-
