@@ -32,6 +32,26 @@ resource "aws_networkfirewall_rule_group" "main" {
   rules    = file(var.network_firewall_rules_file)
 }
 
+resource "aws_networkfirewall_firewall_policy" "example" {
+  name = "example"
+
+  firewall_policy {
+    stateless_default_actions          = ["aws:pass"]
+    stateless_fragment_default_actions = ["aws:drop"]
+    stateless_rule_group_reference {
+      priority     = 1
+      resource_arn = aws_networkfirewall_rule_group.main_stateless.arn
+    }
+  }
+}
+
+resource "aws_networkfirewall_rule_group" "main_stateless" {
+  capacity = 100
+  name     = "main"
+  type     = "STATELESS"
+  rules    = file(var.network_firewall_rules_file)
+}
+
 resource "aws_cloudwatch_log_group" "network_firewall" {
   name              = "/aws/network-firewall-flow-log/${aws_vpc.main.id}"
   retention_in_days = var.network_firewall_cloudwatch_log_group_retention_in_days
