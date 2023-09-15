@@ -21,6 +21,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
       stream_exception_policy = "DROP"
     }
     stateful_rule_group_reference {
+      priority     = 1
       resource_arn = aws_networkfirewall_rule_group.main.arn
     }
   }
