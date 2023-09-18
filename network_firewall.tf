@@ -16,7 +16,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
     stateless_fragment_default_actions = ["aws:forward_to_sfe"]
 
     stateful_engine_options {
-      rule_order              = "STRICT_PRIORITY"
+      rule_order              = "STRICT_ORDER"
       stream_exception_policy = "DROP"
     }
     stateful_rule_group_reference {
