@@ -29,40 +29,28 @@ jobs:
     name: Bump Version
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Extract branch name
-        id: extract_branch
-        run: |
-          if [ "$GITHUB_EVENT_NAME" == "push" ]; then
-            echo BRANCH_NAME=main >> $GITHUB_ENV
-          else
-            echo BRANCH_NAME=${{ github.head_ref }} >> $GITHUB_ENV
-          fi
-      - name: Bump version
-        id: bump_version
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          INITIAL_VERSION: 0.0.0
-          DEFAULT_BUMP: minor
-          PRERELEASE_SUFFIX: ${{ env.BRANCH_NAME }}
-          RELEASE_BRANCHES: main
-          WITH_V: true
-      - name: Send tag to summary
-        id: tag_to_summary
-        run: echo "The tag for this run -  ${{ steps.bump_version.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+      - name: "Generate semver tag and release"
+        id: semver_tag
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v2.3.1
+        with:
+          prerelease: ${{ github.ref != 'refs/heads/main' }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
     outputs:
       version_tag: ${{steps.bump_version.outputs.tag}}
   terraform_validation:
     name: "Terraform Validation"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - id: tf_version
+        name: "Get terraform version"
+        uses: 'ministryofjustice/opg-github-actions/.github/actions/terraform-version@v2.3.1'
         with:
-          fetch-depth: '0'
-      - uses: hashicorp/setup-terraform@v1
+          terraform_directory: "./"
+      - name: "Setup terraform [version: ${{ steps.tf_version.outputs.version }}]"
+        uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.2.2
+          terraform_version: ${{ steps.tf_version.outputs.version }}
       - name: Terraform Init and Validate
         run: |
           terraform fmt -diff -check
