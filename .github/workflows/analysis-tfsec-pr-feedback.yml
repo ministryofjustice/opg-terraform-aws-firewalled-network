@@ -28,6 +28,6 @@ jobs:
         with:
           fetch-depth: 2
       - name: tfsec with pr comments
-        uses: tfsec/tfsec-pr-commenter-action@v1.2.0
+        uses: tfsec/tfsec-pr-commenter-action@v1.3.1
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
