@@ -66,9 +66,9 @@ resource "aws_route_table" "firewall" {
 
 resource "aws_route" "firewall_nat_gateway" {
   count                  = 3
-  route_table_id         = element(aws_route_table.firewall.*.id, count.index)
+  route_table_id         = element(aws_route_table.firewall[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.gw.*.id, count.index)
+  nat_gateway_id         = element(aws_nat_gateway.gw[*].id, count.index)
 
   timeouts {
     create = "5m"
@@ -111,7 +111,7 @@ data "aws_vpc_endpoint" "network_firewall" {
 
 resource "aws_route" "application_nat_gateway" {
   count                  = 3
-  route_table_id         = element(aws_route_table.application.*.id, count.index)
+  route_table_id         = element(aws_route_table.application[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
   vpc_endpoint_id        = data.aws_vpc_endpoint.network_firewall[count.index].id
 
