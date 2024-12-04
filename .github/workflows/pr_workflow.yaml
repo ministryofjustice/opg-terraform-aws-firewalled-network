@@ -24,6 +24,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  TFLINT_VERSION: 0.50.1
+
 jobs:
   bump_version:
     name: Bump Version
@@ -51,10 +54,18 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ steps.tf_version.outputs.version }}
-      - name: Terraform Init and Validate
+      - uses: terraform-linters/setup-tflint@v4
+        name: Setup TFLint
+        with:
+          tflint_version: v${{ env.TFLINT_VERSION }}
+      - name: Terraform fmt check
         run: |
           terraform fmt -diff -check
       - name: Terraform Init and Validate
         run: |
           terraform init -input=false
           terraform validate
+      - name: Lint Terraform
+        id: tf_lint
+        run: tflint --recursive
+        working-directory: .
