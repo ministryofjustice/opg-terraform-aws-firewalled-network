@@ -44,10 +44,10 @@ variable "public_subnet_assign_ipv6_address_on_creation" {
   default = false
 }
 
-variable "default_security_group_name" {
-  type    = string
-  default = "default"
-}
+# variable "default_security_group_name" {
+#   type    = string
+#   default = "default"
+# }
 
 variable "default_security_group_ingress" {
   type    = list(map(string))
