@@ -11,6 +11,11 @@ resource "aws_vpc_dhcp_options" "dns_resolver" {
   domain_name_servers = var.dhcp_options_domain_name_servers
 }
 
+resource "aws_vpc_dhcp_options_association" "dns_resolver" {
+  vpc_id          = aws_vpc.main.id
+  dhcp_options_id = aws_vpc_dhcp_options.dns_resolver.id
+}
+
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
