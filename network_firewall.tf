@@ -33,9 +33,33 @@ resource "aws_networkfirewall_rule_group" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {
-  name              = "/aws/network-firewall-flow-log/${aws_vpc.main.id}"
+  name              = "/aws/vendedlogs/network-firewall-flow-log/${aws_vpc.main.id}"
   retention_in_days = var.network_firewall_cloudwatch_log_group_retention_in_days
   kms_key_id        = var.network_firewall_cloudwatch_log_group_kms_key_id
+}
+
+data "aws_caller_identity" "main" {}
+
+data "aws_iam_policy_document" "network_firewall_log_publishing" {
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:PutLogEventsBatch",
+    ]
+
+    resources = [aws_cloudwatch_log_group.network_firewall.arn]
+
+    principals {
+      identifiers = [data.aws_caller_identity.main.account_id]
+      type        = "AWS"
+    }
+  }
+}
+
+resource "aws_cloudwatch_log_resource_policy" "network_firewall_log_publishing" {
+  policy_document = data.aws_iam_policy_document.network_firewall_log_publishing.json
+  policy_name     = "network-firewall-log-publishing-policy"
 }
 
 resource "aws_networkfirewall_logging_configuration" "main" {
