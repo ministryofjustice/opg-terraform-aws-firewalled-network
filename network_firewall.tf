@@ -20,16 +20,33 @@ resource "aws_networkfirewall_firewall_policy" "main" {
       stream_exception_policy = "DROP"
     }
     stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.main.arn
+      resource_arn = var.network_firewall_rules_file == null ? aws_networkfirewall_rule_group.suricata[0].arn : aws_networkfirewall_rule_group.rule_group[0].arn
     }
   }
 }
 
-resource "aws_networkfirewall_rule_group" "main" {
+resource "aws_networkfirewall_rule_group" "suricata" {
+  count    = var.network_firewall_rules_file == null ? 0 : 1
   capacity = 100
   name     = "main"
   type     = "STATEFUL"
   rules    = file(var.network_firewall_rules_file)
+}
+
+resource "aws_networkfirewall_rule_group" "rule_group" {
+  count    = var.allowed_targets_list == null || [] ? 0 : 1
+  capacity = 100
+  name     = "main"
+  type     = "STATEFUL"
+  rule_group {
+    rules_source {
+      rules_source_list {
+        generated_rules_type = "ALLOWLIST"
+        target_types         = ["HTTP_HOST"]
+        targets              = var.allowed_targets_list
+      }
+    }
+  }
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {

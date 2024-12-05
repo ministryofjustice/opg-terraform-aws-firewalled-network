@@ -95,4 +95,11 @@ variable "network_firewall_cloudwatch_log_group_kms_key_id" {
 variable "network_firewall_rules_file" {
   type        = string
   description = "path to the file containing the network firewall rules in suricata format"
+  nullable    = true
+}
+
+variable "allowed_targets_list" {
+  type        = list(any)
+  description = "list of addresses that permitted egress targets"
+  default     = []
 }
