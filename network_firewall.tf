@@ -78,42 +78,42 @@ resource "aws_cloudwatch_log_resource_policy" "network_firewall_log_publishing" 
   policy_name     = "network-firewall-log-publishing-policy"
 }
 
-resource "aws_networkfirewall_logging_configuration" "alert" {
-  count        = 3
-  firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
-  logging_configuration {
-    log_destination_config {
-      log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_alert_log.name
-      }
-      log_destination_type = "CloudWatchLogs"
-      log_type             = "ALERT"
-    }
-  }
-}
-resource "aws_networkfirewall_logging_configuration" "flow" {
-  count        = 3
-  firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
-  logging_configuration {
-    log_destination_config {
-      log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_flow_log.name
-      }
-      log_destination_type = "CloudWatchLogs"
-      log_type             = "FLOW"
-    }
-  }
-}
-resource "aws_networkfirewall_logging_configuration" "tls" {
-  count        = 3
-  firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
-  logging_configuration {
-    log_destination_config {
-      log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_tls_log.name
-      }
-      log_destination_type = "CloudWatchLogs"
-      log_type             = "TLS"
-    }
-  }
-}
+# resource "aws_networkfirewall_logging_configuration" "alert" {
+#   count        = 3
+#   firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
+#   logging_configuration {
+#     log_destination_config {
+#       log_destination = {
+#         logGroup = aws_cloudwatch_log_group.network_firewall_alert_log.name
+#       }
+#       log_destination_type = "CloudWatchLogs"
+#       log_type             = "ALERT"
+#     }
+#   }
+# }
+# resource "aws_networkfirewall_logging_configuration" "flow" {
+#   count        = 3
+#   firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
+#   logging_configuration {
+#     log_destination_config {
+#       log_destination = {
+#         logGroup = aws_cloudwatch_log_group.network_firewall_flow_log.name
+#       }
+#       log_destination_type = "CloudWatchLogs"
+#       log_type             = "FLOW"
+#     }
+#   }
+# }
+# resource "aws_networkfirewall_logging_configuration" "tls" {
+#   count        = 3
+#   firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
+#   logging_configuration {
+#     log_destination_config {
+#       log_destination = {
+#         logGroup = aws_cloudwatch_log_group.network_firewall_tls_log.name
+#       }
+#       log_destination_type = "CloudWatchLogs"
+#       log_type             = "TLS"
+#     }
+#   }
+# }
