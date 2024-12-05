@@ -33,7 +33,7 @@ resource "aws_networkfirewall_rule_group" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {
-  name              = "/aws/network-firewall-flow-log/${aws_vpc.main.id}"
+  name              = "/aws/vendedlogs/network-firewall-flow-log/${aws_vpc.main.id}"
   retention_in_days = var.network_firewall_cloudwatch_log_group_retention_in_days
   kms_key_id        = var.network_firewall_cloudwatch_log_group_kms_key_id
 }
