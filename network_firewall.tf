@@ -61,9 +61,9 @@ data "aws_iam_policy_document" "network_firewall_log_publishing" {
     ]
 
     resources = [
-      aws_cloudwatch_log_group.network_firewall_flow_log.arn,
-      aws_cloudwatch_log_group.network_firewall_alert_log.arn,
-      aws_cloudwatch_log_group.network_firewall_tls_log.arn,
+      aws_cloudwatch_log_group.network_firewall.arn,
+      # aws_cloudwatch_log_group.network_firewall_alert_log.arn,
+      # aws_cloudwatch_log_group.network_firewall_tls_log.arn,
     ]
 
     principals {
@@ -84,7 +84,7 @@ resource "aws_networkfirewall_logging_configuration" "main" {
   logging_configuration {
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_flow_log.name
+        logGroup = aws_cloudwatch_log_group.network_firewall.name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "FLOW"
@@ -92,14 +92,14 @@ resource "aws_networkfirewall_logging_configuration" "main" {
 
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_flow_log.name
+        logGroup = aws_cloudwatch_log_group.network_firewall.name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "ALERT"
     }
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall_flow_log.name
+        logGroup = aws_cloudwatch_log_group.network_firewall.name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "TLS"
