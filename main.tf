@@ -39,6 +39,7 @@ resource "aws_default_network_acl" "default" {
   default_network_acl_id = aws_vpc.main.default_network_acl_id
   subnet_ids = concat(
     aws_subnet.public[*].id,
+    aws_subnet.firewall[*].id,
     aws_subnet.application[*].id,
     aws_subnet.data[*].id
   )
