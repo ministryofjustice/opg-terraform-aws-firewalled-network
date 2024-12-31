@@ -40,11 +40,12 @@ resource "aws_route" "public_internet_gateway" {
     create = "5m"
   }
 }
+
 resource "aws_route" "igw_ingress_firewall" {
   count                  = 3
   route_table_id         = aws_route_table.public[count.index].id
   destination_cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.application)
-  gateway_id             = aws_internet_gateway.gw.id
+  vpc_endpoint_id        = data.aws_vpc_endpoint.network_firewall[count.index].id
 
   timeouts {
     create = "5m"
