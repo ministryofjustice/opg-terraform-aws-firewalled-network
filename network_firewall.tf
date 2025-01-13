@@ -27,7 +27,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
 
 resource "aws_networkfirewall_rule_group" "main" {
   capacity = 100
-  name     = "main-${filebase64sha256(var.network_firewall_rules_file)}"
+  name     = "main-${regex("[[:alnum:]]", filebase64sha256(var.network_firewall_rules_file))}"
   type     = "STATEFUL"
   rules    = file(var.network_firewall_rules_file)
   lifecycle {
