@@ -27,9 +27,12 @@ resource "aws_networkfirewall_firewall_policy" "main" {
 
 resource "aws_networkfirewall_rule_group" "main" {
   capacity = 100
-  name     = "main"
+  name     = "main-${replace(filebase64sha256(var.network_firewall_rules_file), "/[^[:alnum:]]/", "")}"
   type     = "STATEFUL"
   rules    = file(var.network_firewall_rules_file)
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {
