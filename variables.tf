@@ -96,3 +96,9 @@ variable "network_firewall_rules_file" {
   type        = string
   description = "path to the file containing the network firewall rules in suricata format"
 }
+
+variable "domain_allow_list" {
+  type        = list(string)
+  description = "List of domains that you want to allow egress to"
+  default     = []
+}
