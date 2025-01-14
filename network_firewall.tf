@@ -8,6 +8,13 @@ resource "aws_networkfirewall_firewall" "main" {
   }
 }
 
+locals {
+  rule_group_arns = {
+    rule_file         = aws_networkfirewall_rule_group.rule_file.arn,
+    domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list.arn,
+  }
+}
+
 resource "aws_networkfirewall_firewall_policy" "main" {
   name = "main"
 
@@ -19,12 +26,18 @@ resource "aws_networkfirewall_firewall_policy" "main" {
       rule_order              = "DEFAULT_ACTION_ORDER"
       stream_exception_policy = "DROP"
     }
-    stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.rule_file.arn
+    dynamic "stateful_rule_group_reference" {
+      for_each = toset(local.rule_group_arns)
+      content {
+        resource_arn = stateful_rule_group_reference.value
+      }
     }
-    stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.domain_allow_list.arn
-    }
+    # stateful_rule_group_reference {
+    #   resource_arn = aws_networkfirewall_rule_group.rule_file.arn
+    # }
+    # stateful_rule_group_reference {
+    #   resource_arn = aws_networkfirewall_rule_group.domain_allow_list.arn
+    # }
   }
 }
 
