@@ -92,3 +92,16 @@ resource "aws_networkfirewall_logging_configuration" "main" {
     }
   }
 }
+
+resource "aws_cloudwatch_query_definition" "network_firewall_logs" {
+  name = "Network Firewall Queries/Network Firewall Logs"
+  log_group_names = [
+    aws_cloudwatch_log_group.network_firewall.name
+  ]
+
+  query_string = <<EOF
+fields @timestamp, event.alert.action, event.tls.sni, event.event_type, event.alert.signature, availability_zone, event.proto, @message
+| sort @timestamp desc
+| limit 10000
+EOF
+}
