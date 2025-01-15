@@ -9,10 +9,9 @@ resource "aws_networkfirewall_firewall" "main" {
 }
 
 locals {
-  rule_group_arns = {
-    rule_file         = aws_networkfirewall_rule_group.rule_file.arn,
-    domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list.arn,
-  }
+  rule_file         = var.network_firewall_rules_file == 0 ? {} : { rule_file = aws_networkfirewall_rule_group.rule_file.arn }
+  domain_allow_list = var.domain_allow_list == 0 ? {} : { domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list.arn }
+  rule_group_arns   = merge(rule_file, domain_allow_list)
 }
 
 resource "aws_networkfirewall_firewall_policy" "main" {
@@ -32,12 +31,6 @@ resource "aws_networkfirewall_firewall_policy" "main" {
         resource_arn = stateful_rule_group_reference.value
       }
     }
-    # stateful_rule_group_reference {
-    #   resource_arn = aws_networkfirewall_rule_group.rule_file.arn
-    # }
-    # stateful_rule_group_reference {
-    #   resource_arn = aws_networkfirewall_rule_group.domain_allow_list.arn
-    # }
   }
 }
 
