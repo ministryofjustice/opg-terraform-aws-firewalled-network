@@ -11,7 +11,7 @@ resource "aws_networkfirewall_firewall" "main" {
 locals {
   rule_file         = var.network_firewall_rules_file == 0 ? {} : { rule_file = aws_networkfirewall_rule_group.rule_file.arn }
   domain_allow_list = var.domain_allow_list == 0 ? {} : { domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list.arn }
-  rule_group_arns   = merge(rule_file, domain_allow_list)
+  rule_group_arns   = merge(local.rule_file, local.domain_allow_list)
 }
 
 resource "aws_networkfirewall_firewall_policy" "main" {
