@@ -9,8 +9,8 @@ resource "aws_networkfirewall_firewall" "main" {
 }
 
 locals {
-  rule_file         = var.network_firewall_rules_file == 0 ? {} : { rule_file = aws_networkfirewall_rule_group.rule_file.arn }
-  domain_allow_list = var.domain_allow_list == 0 ? {} : { domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list.arn }
+  rule_file         = var.network_firewall_rules_file == 0 ? {} : { rule_file = aws_networkfirewall_rule_group.rule_file[0].arn }
+  domain_allow_list = var.domain_allow_list == 0 ? {} : { domain_allow_list = aws_networkfirewall_rule_group.domain_allow_list[0].arn }
   rule_group_arns   = merge(local.rule_file, local.domain_allow_list)
 }
 
@@ -35,7 +35,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
 }
 
 resource "aws_networkfirewall_rule_group" "rule_file" {
-  # count    = var.network_firewall_rules_file == 0 ? 0 : 1
+  count    = var.network_firewall_rules_file == "" ? 0 : 1
   capacity = 100
   name     = "rule-file-${replace(filebase64sha256(var.network_firewall_rules_file), "/[^[:alnum:]]/", "")}"
   type     = "STATEFUL"
@@ -46,7 +46,7 @@ resource "aws_networkfirewall_rule_group" "rule_file" {
 }
 
 resource "aws_networkfirewall_rule_group" "domain_allow_list" {
-  # count    = length(var.domain_allow_list) == 0 ? 0 : 1
+  count    = length(var.domain_allow_list) == 0 ? 0 : 1
   capacity = 100
   name     = "domain-allow-list${replace(sha256(jsonencode(var.domain_allow_list)), "/[^[:alnum:]]/", "")}"
   type     = "STATEFUL"
