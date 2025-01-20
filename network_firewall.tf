@@ -14,8 +14,12 @@ locals {
   rule_group_arns   = toset(sort(concat([local.rule_file], [local.domain_allow_list])))
 }
 
+resource "terraform_data" "replacement" {
+  triggers_replace = [local.rule_group_arns]
+}
+
 resource "aws_networkfirewall_firewall_policy" "main" {
-  name = "main"
+  name = "main+${replace(sha256(jsonencode(local.rule_group_arns)), "/[^[:alnum:]]/", "")}"
 
   firewall_policy {
     stateless_default_actions          = ["aws:forward_to_sfe"]
@@ -31,6 +35,12 @@ resource "aws_networkfirewall_firewall_policy" "main" {
         resource_arn = stateful_rule_group_reference.key
       }
     }
+  }
+  lifecycle {
+    create_before_destroy = true
+    replace_triggered_by = [
+      terraform_data.replacement
+    ]
   }
 }
 
