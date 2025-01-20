@@ -8,6 +8,12 @@ resource "aws_networkfirewall_firewall" "main" {
   }
 }
 
+locals {
+  rule_file         = try(aws_networkfirewall_rule_group.rule_file[0].arn, "")
+  domain_allow_list = try(aws_networkfirewall_rule_group.domain_allow_list[0].arn, "")
+  rule_group_arns   = toset(sort(concat([local.rule_file], [local.domain_allow_list])))
+}
+
 resource "aws_networkfirewall_firewall_policy" "main" {
   name = "main"
 
@@ -19,17 +25,46 @@ resource "aws_networkfirewall_firewall_policy" "main" {
       rule_order              = "DEFAULT_ACTION_ORDER"
       stream_exception_policy = "DROP"
     }
-    stateful_rule_group_reference {
-      resource_arn = aws_networkfirewall_rule_group.main.arn
+    dynamic "stateful_rule_group_reference" {
+      for_each = local.rule_group_arns
+      content {
+        resource_arn = stateful_rule_group_reference.key
+      }
     }
   }
 }
 
-resource "aws_networkfirewall_rule_group" "main" {
+resource "aws_networkfirewall_rule_group" "rule_file" {
+  count    = var.network_firewall_rules_file == "" ? 0 : 1
   capacity = 100
-  name     = "main-${replace(filebase64sha256(var.network_firewall_rules_file), "/[^[:alnum:]]/", "")}"
+  name     = "rule-file-${replace(filebase64sha256(var.network_firewall_rules_file), "/[^[:alnum:]]/", "")}"
   type     = "STATEFUL"
   rules    = file(var.network_firewall_rules_file)
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_networkfirewall_rule_group" "domain_allow_list" {
+  count    = length(var.domain_allow_list) == 0 ? 0 : 1
+  capacity = 100
+  name     = "domain-allow-list${replace(sha256(jsonencode(var.domain_allow_list)), "/[^[:alnum:]]/", "")}"
+  type     = "STATEFUL"
+  rule_group {
+    stateful_rule_options {
+      rule_order = "DEFAULT_ACTION_ORDER"
+    }
+    rules_source {
+      rules_source_list {
+        generated_rules_type = "ALLOWLIST"
+        target_types = [
+          "HTTP_HOST",
+          "TLS_SNI"
+        ]
+        targets = var.domain_allow_list
+      }
+    }
+  }
   lifecycle {
     create_before_destroy = true
   }
