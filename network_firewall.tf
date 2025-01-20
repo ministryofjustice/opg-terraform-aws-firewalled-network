@@ -9,8 +9,8 @@ resource "aws_networkfirewall_firewall" "main" {
 }
 
 locals {
-  rule_file         = tolist(try(aws_networkfirewall_rule_group.rule_file[0].arn), "")
-  domain_allow_list = tolist(try(aws_networkfirewall_rule_group.domain_allow_list[0].arn), "")
+  rule_file         = tolist(try(aws_networkfirewall_rule_group.rule_file[0].arn, ""))
+  domain_allow_list = tolist(try(aws_networkfirewall_rule_group.domain_allow_list[0].arn, ""))
   rule_group_arns   = concat(local.rule_file, local.domain_allow_list)
 }
 
