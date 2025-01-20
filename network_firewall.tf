@@ -28,7 +28,7 @@ resource "aws_networkfirewall_firewall_policy" "main" {
     dynamic "stateful_rule_group_reference" {
       for_each = toset(local.rule_group_arns)
       content {
-        resource_arn = stateful_rule_group_reference.value
+        resource_arn = stateful_rule_group_reference.key
       }
     }
   }
