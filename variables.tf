@@ -95,6 +95,7 @@ variable "network_firewall_cloudwatch_log_group_kms_key_id" {
 variable "network_firewall_rules_file" {
   type        = string
   description = "path to the file containing the network firewall rules in suricata format"
+  default     = ""
 }
 
 variable "domain_allow_list" {
