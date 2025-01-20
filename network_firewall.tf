@@ -65,6 +65,9 @@ resource "aws_networkfirewall_rule_group" "domain_allow_list" {
       }
     }
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {
