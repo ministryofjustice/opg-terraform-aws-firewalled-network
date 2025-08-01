@@ -1,7 +1,10 @@
 data "aws_default_tags" "default_tags" {}
 
+
+
 locals {
-  name-prefix = "${data.aws_default_tags.default_tags.tags.application}-${data.aws_default_tags.default_tags.tags.environment-name}"
+  application-name = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
+  name-prefix      = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
 }
 
 variable "cidr" {
