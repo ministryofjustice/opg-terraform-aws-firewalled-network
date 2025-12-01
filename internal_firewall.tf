@@ -1,5 +1,5 @@
 resource "aws_networkfirewall_firewall" "main" {
-  count               = 3
+  count               = var.use_shared_firewall ? 0 : 3
   name                = "${local.name-prefix}-${data.aws_availability_zones.all.names[count.index]}"
   firewall_policy_arn = var.aws_networkfirewall_firewall_policy.arn
   vpc_id              = aws_vpc.main.id
@@ -9,14 +9,14 @@ resource "aws_networkfirewall_firewall" "main" {
 }
 
 resource "aws_cloudwatch_log_group" "network_firewall" {
+  count             = var.use_shared_firewall ? 0 : 1
   name              = "/aws/vendedlogs/network-firewall-flow-log/${aws_vpc.main.id}"
   retention_in_days = var.network_firewall_cloudwatch_log_group_retention_in_days
   kms_key_id        = var.network_firewall_cloudwatch_log_group_kms_key_id
 }
 
-data "aws_caller_identity" "main" {}
-
 data "aws_iam_policy_document" "network_firewall_log_publishing" {
+  count = var.use_shared_firewall ? 0 : 1
   statement {
     actions = [
       "logs:CreateLogStream",
@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "network_firewall_log_publishing" {
       "logs:PutLogEventsBatch",
     ]
 
-    resources = [aws_cloudwatch_log_group.network_firewall.arn]
+    resources = [aws_cloudwatch_log_group.network_firewall[0].arn]
 
     principals {
       identifiers = [data.aws_caller_identity.main.account_id]
@@ -34,31 +34,32 @@ data "aws_iam_policy_document" "network_firewall_log_publishing" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "network_firewall_log_publishing" {
-  policy_document = data.aws_iam_policy_document.network_firewall_log_publishing.json
+  count           = var.use_shared_firewall ? 0 : 1
+  policy_document = data.aws_iam_policy_document.network_firewall_log_publishing[0].json
   policy_name     = "network-firewall-log-publishing-policy"
 }
 
 resource "aws_networkfirewall_logging_configuration" "main" {
-  count        = 3
+  count        = var.use_shared_firewall ? 0 : 3
   firewall_arn = aws_networkfirewall_firewall.main[count.index].arn
   logging_configuration {
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall.name
+        logGroup = aws_cloudwatch_log_group.network_firewall[0].name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "FLOW"
     }
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall.name
+        logGroup = aws_cloudwatch_log_group.network_firewall[0].name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "ALERT"
     }
     log_destination_config {
       log_destination = {
-        logGroup = aws_cloudwatch_log_group.network_firewall.name
+        logGroup = aws_cloudwatch_log_group.network_firewall[0].name
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "TLS"
@@ -67,9 +68,10 @@ resource "aws_networkfirewall_logging_configuration" "main" {
 }
 
 resource "aws_cloudwatch_query_definition" "network_firewall_logs" {
-  name = "Network Firewall Queries/Network Firewall Logs"
+  count = var.use_shared_firewall ? 0 : 1
+  name  = "Network Firewall Queries/Network Firewall Logs"
   log_group_names = [
-    aws_cloudwatch_log_group.network_firewall.name
+    aws_cloudwatch_log_group.network_firewall[0].name
   ]
 
   query_string = <<EOF

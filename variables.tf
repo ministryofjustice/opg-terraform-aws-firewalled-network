@@ -1,10 +1,11 @@
-data "aws_default_tags" "default_tags" {}
-
-
-
 locals {
   application-name = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
   name-prefix      = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
+}
+variable "aws_networkfirewall_firewall_policy" {
+  description = "an aws_networkfirewall_firewall_policy resource containing the rule groups to be applied."
+  default     = null
+  type        = any
 }
 
 variable "cidr" {
@@ -46,11 +47,6 @@ variable "public_subnet_assign_ipv6_address_on_creation" {
   type    = bool
   default = false
 }
-
-# variable "default_security_group_name" {
-#   type    = string
-#   default = "default"
-# }
 
 variable "default_security_group_ingress" {
   type    = list(map(string))
@@ -95,7 +91,23 @@ variable "network_firewall_cloudwatch_log_group_kms_key_id" {
   default = null
 }
 
-variable "aws_networkfirewall_firewall_policy" {
-  type        = any
-  description = "an aws_networkfirewall_firewall_policy resource containing the rule groups to be applied."
+variable "network_firewall_enabled" {
+  default     = false
+  description = "Whether to route traffic through the Firewall"
+  type        = bool
+}
+
+variable "shared_firewall_configuration" {
+  description = "Object for Configuring the Shared Firewall if Used"
+  type = object({
+    account_id   = string
+    account_name = string
+  })
+  default = null
+}
+
+variable "use_shared_firewall" {
+  description = "Whether to provision Network Firewall resources in account or used the shared infrastructure"
+  default     = false
+  type        = bool
 }
