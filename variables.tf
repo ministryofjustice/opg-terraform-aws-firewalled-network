@@ -105,11 +105,6 @@ variable "shared_firewall_configuration" {
   })
   default = null
 }
-variable "network_firewall_ingress_inspection_enabled" {
-  default     = true
-  description = "Whether or not to inspect ingres traffic"
-  type        = bool
-}
 
 variable "use_shared_firewall" {
   description = "Whether to provision Network Firewall resources in account or used the shared infrastructure"
