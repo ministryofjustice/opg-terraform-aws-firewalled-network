@@ -1,11 +1,14 @@
+# Internal Network Firewall to the VPC with the Firewall Routing Disabled so no traffic passes through the firewall
 module "network" {
   source                              = "github.com/ministryofjustice/opg-terraform-aws-firewalled-network?ref=v0.2.14"
+  aws_networkfirewall_firewall_policy = aws_networkfirewall_firewall_policy.main
   cidr                                = var.network_cidr_block
+  default_security_group_egress       = []
+  default_security_group_ingress      = []
   enable_dns_hostnames                = true
   enable_dns_support                  = true
-  default_security_group_ingress      = []
-  default_security_group_egress       = []
-  aws_networkfirewall_firewall_policy = aws_networkfirewall_firewall_policy.main
+  network_firewall_enabled            = false
+
   providers = {
     aws = aws.region
   }
