@@ -1,6 +1,8 @@
 # opg-terraform-aws-firewalled-network
 Network Firewall Enabled OPG AWS Network Module: Managed by opg-org-infra &amp; Terraform
 
+Example Usage for both Internal & Shared Firewall Deployments are in the examples directory.
+
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
 
@@ -86,10 +88,9 @@ No modules.
 | <a name="input_map_public_ip_on_launch"></a> [map\_public\_ip\_on\_launch](#input\_map\_public\_ip\_on\_launch) | n/a | `bool` | `false` | no |
 | <a name="input_network_firewall_cloudwatch_log_group_kms_key_id"></a> [network\_firewall\_cloudwatch\_log\_group\_kms\_key\_id](#input\_network\_firewall\_cloudwatch\_log\_group\_kms\_key\_id) | n/a | `string` | `null` | no |
 | <a name="input_network_firewall_cloudwatch_log_group_retention_in_days"></a> [network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days](#input\_network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days) | Number of days you want to retain log events. | `number` | `null` | no |
-| <a name="input_network_firewall_enabled"></a> [network\_firewall\_enabled](#input\_network\_firewall\_enabled) | Whether to route traffic through the Firewall | `bool` | `false` | no |
+| <a name="input_network_firewall_enabled"></a> [network\_firewall\_enabled](#input\_network\_firewall\_enabled) | Whether to route traffic through the Firewall | `bool` | `true` | no |
 | <a name="input_public_subnet_assign_ipv6_address_on_creation"></a> [public\_subnet\_assign\_ipv6\_address\_on\_creation](#input\_public\_subnet\_assign\_ipv6\_address\_on\_creation) | n/a | `bool` | `false` | no |
-| <a name="input_shared_firewall_configuration"></a> [shared\_firewall\_configuration](#input\_shared\_firewall\_configuration) | Object for Configuring the Shared Firewall if Used | <pre>object({<br/>    account_id   = string<br/>    account_name = string<br/>  })</pre> | `null` | no |
-| <a name="input_use_shared_firewall"></a> [use\_shared\_firewall](#input\_use\_shared\_firewall) | Whether to provision Network Firewall resources in account or used the shared infrastructure | `bool` | `true` | no |
+| <a name="input_shared_firewall_configuration"></a> [shared\_firewall\_configuration](#input\_shared\_firewall\_configuration) | Object for Configuring the Shared Firewall, by providing this config you will switch from an internal VPC Firewall to the shared firewall | <pre>object({<br/>    account_id   = string<br/>    account_name = string<br/>  })</pre> | `null` | no |
 
 ## Outputs
 
