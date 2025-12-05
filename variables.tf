@@ -1,7 +1,9 @@
 locals {
-  application-name = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
-  name-prefix      = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
+  application-name    = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
+  name-prefix         = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
+  use_shared_firewall = var.shared_firewall_configuration == null ? false : true
 }
+
 variable "aws_networkfirewall_firewall_policy" {
   description = "an aws_networkfirewall_firewall_policy resource containing the rule groups to be applied."
   default     = null
@@ -92,22 +94,16 @@ variable "network_firewall_cloudwatch_log_group_kms_key_id" {
 }
 
 variable "network_firewall_enabled" {
-  default     = false
+  default     = true
   description = "Whether to route traffic through the Firewall"
   type        = bool
 }
 
 variable "shared_firewall_configuration" {
-  description = "Object for Configuring the Shared Firewall if Used"
+  default     = null
+  description = "Object for Configuring the Shared Firewall, by providing this config you will switch from an internal VPC Firewall to the shared firewall"
   type = object({
     account_id   = string
     account_name = string
   })
-  default = null
-}
-
-variable "use_shared_firewall" {
-  description = "Whether to provision Network Firewall resources in account or used the shared infrastructure"
-  default     = false
-  type        = bool
 }
