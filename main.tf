@@ -26,6 +26,9 @@ resource "aws_eip" "nat" {
   count  = 3
   domain = "vpc"
   tags   = { Name = "${local.name-prefix}-eip-nat-gateway" }
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_nat_gateway" "gw" {
@@ -38,7 +41,7 @@ resource "aws_nat_gateway" "gw" {
 resource "aws_default_network_acl" "default" {
   default_network_acl_id = aws_vpc.main.default_network_acl_id
   subnet_ids = concat(
-    aws_subnet.alb[*].id,
+    aws_subnet.lb[*].id,
     aws_subnet.nat[*].id,
     aws_subnet.firewall[*].id,
     aws_subnet.application[*].id,

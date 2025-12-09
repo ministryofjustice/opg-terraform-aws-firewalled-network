@@ -1,6 +1,6 @@
 locals {
   subnet_cidr_block_netnum = {
-    alb         = 25
+    lb          = 25
     nat         = 45
     firewall    = 65
     application = 95
@@ -9,23 +9,23 @@ locals {
 }
 
 // Public Subnets
-resource "aws_subnet" "alb" {
+resource "aws_subnet" "lb" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
-  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.alb)
+  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.lb)
   availability_zone               = data.aws_availability_zones.all.names[count.index]
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
   tags                            = { Name = "public-${data.aws_availability_zones.all.names[count.index]}" }
 }
 
-resource "aws_route_table_association" "alb" {
+resource "aws_route_table_association" "lb" {
   count          = 3
-  subnet_id      = aws_subnet.alb[count.index].id
-  route_table_id = aws_route_table.alb[count.index].id
+  subnet_id      = aws_subnet.lb[count.index].id
+  route_table_id = aws_route_table.lb[count.index].id
 }
 
-resource "aws_route_table" "alb" {
+resource "aws_route_table" "lb" {
   count  = 3
   vpc_id = aws_vpc.main.id
   tags   = { Name = "public-route-table" }

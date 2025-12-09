@@ -1,7 +1,7 @@
 // ALB Subnet Routes
-resource "aws_route" "alb_egress_via_internet_gateway" {
+resource "aws_route" "lb_egress_via_internet_gateway" {
   count                  = 3
-  route_table_id         = aws_route_table.alb[count.index].id
+  route_table_id         = aws_route_table.lb[count.index].id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gw.id
 
