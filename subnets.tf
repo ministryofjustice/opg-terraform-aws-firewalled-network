@@ -1,6 +1,7 @@
 locals {
   subnet_cidr_block_netnum = {
-    public      = 45
+    alb         = 25
+    nat         = 45
     firewall    = 65
     application = 95
     data        = 115
@@ -8,26 +9,49 @@ locals {
 }
 
 // Public Subnets
-resource "aws_subnet" "public" {
+resource "aws_subnet" "alb" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
-  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.public)
+  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.alb)
   availability_zone               = data.aws_availability_zones.all.names[count.index]
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
   tags                            = { Name = "public-${data.aws_availability_zones.all.names[count.index]}" }
 }
 
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "alb" {
   count          = 3
-  subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public[count.index].id
+  subnet_id      = aws_subnet.alb[count.index].id
+  route_table_id = aws_route_table.alb[count.index].id
 }
 
-resource "aws_route_table" "public" {
+resource "aws_route_table" "alb" {
   count  = 3
   vpc_id = aws_vpc.main.id
   tags   = { Name = "public-route-table" }
+}
+
+// Nat Subnets
+resource "aws_subnet" "nat" {
+  count                           = 3
+  vpc_id                          = aws_vpc.main.id
+  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.nat)
+  availability_zone               = data.aws_availability_zones.all.names[count.index]
+  map_public_ip_on_launch         = var.map_public_ip_on_launch
+  assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
+  tags                            = { Name = "nat-${data.aws_availability_zones.all.names[count.index]}" }
+}
+
+resource "aws_route_table_association" "nat" {
+  count          = 3
+  subnet_id      = aws_subnet.nat[count.index].id
+  route_table_id = aws_route_table.nat[count.index].id
+}
+
+resource "aws_route_table" "nat" {
+  count  = 3
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "nat-route-table" }
 }
 
 

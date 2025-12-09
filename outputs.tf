@@ -15,11 +15,11 @@ output "flow_log_cloudwatch_log_group" {
 }
 
 output "public_subnets" {
-  value = aws_subnet.public
+  value = aws_subnet.alb
 }
 
 output "public_subnet_route_tables" {
-  value = aws_route_table.public
+  value = aws_route_table.alb
 }
 
 output "vpc" {
