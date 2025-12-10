@@ -1,6 +1,7 @@
 locals {
   subnet_cidr_block_netnum = {
-    public      = 45
+    lb          = 25
+    nat         = 45
     firewall    = 65
     application = 95
     data        = 115
@@ -8,49 +9,52 @@ locals {
 }
 
 // Public Subnets
-resource "aws_subnet" "public" {
+resource "aws_subnet" "lb" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
-  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.public)
+  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.lb)
   availability_zone               = data.aws_availability_zones.all.names[count.index]
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
   tags                            = { Name = "public-${data.aws_availability_zones.all.names[count.index]}" }
 }
 
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "lb" {
   count          = 3
-  subnet_id      = aws_subnet.public[count.index].id
-  route_table_id = aws_route_table.public[count.index].id
+  subnet_id      = aws_subnet.lb[count.index].id
+  route_table_id = aws_route_table.lb[count.index].id
 }
 
-resource "aws_route_table" "public" {
+resource "aws_route_table" "lb" {
   count  = 3
   vpc_id = aws_vpc.main.id
   tags   = { Name = "public-route-table" }
 }
 
-resource "aws_route" "public_internet_gateway" {
-  count                  = 3
-  route_table_id         = aws_route_table.public[count.index].id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.gw.id
-
-  timeouts {
-    create = "5m"
-  }
+// Nat Subnets
+resource "aws_subnet" "nat" {
+  count                           = 3
+  vpc_id                          = aws_vpc.main.id
+  cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.nat)
+  availability_zone               = data.aws_availability_zones.all.names[count.index]
+  map_public_ip_on_launch         = var.map_public_ip_on_launch
+  assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
+  tags                            = { Name = "nat-${data.aws_availability_zones.all.names[count.index]}" }
 }
 
-resource "aws_route" "igw_ingress_firewall" {
-  count                  = 3
-  route_table_id         = aws_route_table.public[count.index].id
-  destination_cidr_block = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.application)
-  vpc_endpoint_id        = data.aws_vpc_endpoint.network_firewall[count.index].id
-
-  timeouts {
-    create = "5m"
-  }
+resource "aws_route_table_association" "nat" {
+  count          = 3
+  subnet_id      = aws_subnet.nat[count.index].id
+  route_table_id = aws_route_table.nat[count.index].id
 }
+
+resource "aws_route_table" "nat" {
+  count  = 3
+  vpc_id = aws_vpc.main.id
+  tags   = { Name = "nat-route-table" }
+}
+
+
 
 // Firewall Subets
 resource "aws_subnet" "firewall" {
@@ -75,17 +79,6 @@ resource "aws_route_table" "firewall" {
   tags   = { Name = "firewall-route-table" }
 }
 
-resource "aws_route" "firewall_nat_gateway" {
-  count                  = 3
-  route_table_id         = element(aws_route_table.firewall[*].id, count.index)
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.gw[*].id, count.index)
-
-  timeouts {
-    create = "5m"
-  }
-}
-
 // Application Subets
 resource "aws_subnet" "application" {
   count                           = 3
@@ -107,28 +100,6 @@ resource "aws_route_table" "application" {
   count  = 3
   vpc_id = aws_vpc.main.id
   tags   = { Name = "application-route-table" }
-}
-
-data "aws_vpc_endpoint" "network_firewall" {
-  count  = 3
-  vpc_id = aws_vpc.main.id
-  state  = "available"
-
-  tags = {
-    Firewall                  = aws_networkfirewall_firewall.main[count.index].arn
-    AWSNetworkFirewallManaged = "true"
-  }
-}
-
-resource "aws_route" "application_nat_gateway" {
-  count                  = 3
-  route_table_id         = element(aws_route_table.application[*].id, count.index)
-  destination_cidr_block = "0.0.0.0/0"
-  vpc_endpoint_id        = data.aws_vpc_endpoint.network_firewall[count.index].id
-
-  timeouts {
-    create = "5m"
-  }
 }
 
 // Data Subnets
