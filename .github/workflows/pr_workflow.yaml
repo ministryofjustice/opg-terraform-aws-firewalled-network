@@ -34,7 +34,7 @@ jobs:
     steps:
       - name: "Generate semver tag and release"
         id: semver_tag
-        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v3.1.7
+        uses: ministryofjustice/opg-github-actions/.github/actions/semver-tag@v4.3.8
         with:
           prerelease: ${{ github.ref != 'refs/heads/main' }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -44,17 +44,17 @@ jobs:
     name: "Terraform Validation"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: tf_version
         name: "Get terraform version"
-        uses: 'ministryofjustice/opg-github-actions/.github/actions/terraform-version@v3.1.7'
+        uses: 'ministryofjustice/opg-github-actions/.github/actions/terraform-version@v4.3.8'
         with:
           terraform_directory: "./"
       - name: "Setup terraform [version: ${{ steps.tf_version.outputs.version }}]"
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ steps.tf_version.outputs.version }}
-      - uses: terraform-linters/setup-tflint@v4
+      - uses: terraform-linters/setup-tflint@v6
         name: Setup TFLint
         with:
           tflint_version: v${{ env.TFLINT_VERSION }}
