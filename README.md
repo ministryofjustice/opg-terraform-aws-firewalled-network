@@ -3,7 +3,7 @@ Network Firewall Enabled OPG AWS Network Module: Managed by opg-org-infra &amp; 
 
 Example Usage for both Internal & Shared Firewall Deployments are in the examples directory.
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -41,22 +41,26 @@ No modules.
 | [aws_networkfirewall_firewall.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall) | resource |
 | [aws_networkfirewall_logging_configuration.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_logging_configuration) | resource |
 | [aws_networkfirewall_vpc_endpoint_association.shared](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_vpc_endpoint_association) | resource |
-| [aws_route.application_nat_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.application_egress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
 | [aws_route.firewall_nat_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
-| [aws_route.igw_ingress_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
-| [aws_route.public_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.lb_egress_via_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.nat_egress_via_internet_gateway](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.nat_to_application_via_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
 | [aws_route_table.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table.data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table.firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
-| [aws_route_table.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
+| [aws_route_table.nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table) | resource |
 | [aws_route_table_association.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_route_table_association.firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
-| [aws_route_table_association.public](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
+| [aws_route_table_association.nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_subnet.application](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.lb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
+| [aws_subnet.nat](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_vpc.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc) | resource |
 | [aws_vpc_dhcp_options.dns_resolver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_dhcp_options) | resource |
 | [aws_vpc_dhcp_options_association.dns_resolver](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_dhcp_options_association) | resource |
@@ -90,7 +94,7 @@ No modules.
 | <a name="input_network_firewall_cloudwatch_log_group_retention_in_days"></a> [network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days](#input\_network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days) | Number of days you want to retain log events. | `number` | `null` | no |
 | <a name="input_network_firewall_enabled"></a> [network\_firewall\_enabled](#input\_network\_firewall\_enabled) | Whether to route traffic through the Firewall | `bool` | `true` | no |
 | <a name="input_public_subnet_assign_ipv6_address_on_creation"></a> [public\_subnet\_assign\_ipv6\_address\_on\_creation](#input\_public\_subnet\_assign\_ipv6\_address\_on\_creation) | n/a | `bool` | `false` | no |
-| <a name="input_shared_firewall_configuration"></a> [shared\_firewall\_configuration](#input\_shared\_firewall\_configuration) | Object for Configuring the Shared Firewall, by providing this config you will switch from an internal VPC Firewall to the shared firewall | <pre>object({<br/>    account_id   = string<br/>    account_name = string<br/>  })</pre> | `null` | no |
+| <a name="input_shared_firewall_configuration"></a> [shared\_firewall\_configuration](#input\_shared\_firewall\_configuration) | Object for configuring the shared firewall. By providing this config you will switch from an internal VPC firewall to the shared firewall | <pre>object({<br/>    account_id   = string<br/>    account_name = string<br/>  })</pre> | `null` | no |
 
 ## Outputs
 
@@ -100,6 +104,9 @@ No modules.
 | <a name="output_application_subnets"></a> [application\_subnets](#output\_application\_subnets) | n/a |
 | <a name="output_data_subnets"></a> [data\_subnets](#output\_data\_subnets) | n/a |
 | <a name="output_flow_log_cloudwatch_log_group"></a> [flow\_log\_cloudwatch\_log\_group](#output\_flow\_log\_cloudwatch\_log\_group) | n/a |
+| <a name="output_lb_subnet_route_tables"></a> [lb\_subnet\_route\_tables](#output\_lb\_subnet\_route\_tables) | n/a |
+| <a name="output_lb_subnets"></a> [lb\_subnets](#output\_lb\_subnets) | n/a |
 | <a name="output_public_subnet_route_tables"></a> [public\_subnet\_route\_tables](#output\_public\_subnet\_route\_tables) | n/a |
 | <a name="output_public_subnets"></a> [public\_subnets](#output\_public\_subnets) | n/a |
 | <a name="output_vpc"></a> [vpc](#output\_vpc) | n/a |
+<!-- END_TF_DOCS -->

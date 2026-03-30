@@ -1,0 +1,33 @@
+name: "[Analysis] Snyk IAC PR feedback"
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "**.tf"
+
+permissions:
+  actions: read
+  checks: read
+  contents: none
+  deployments: none
+  issues: none
+  packages: none
+  pull-requests: write
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  snyk_iac:
+    name: Snyk IAC analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          fetch-depth: 2
+      - name: Snyk IAC with pr comments
+        run: echo "::warning title=MISSING-IAC-SCAN::Please add the snyk iac scan composite action when it is available."
+
+      # TODO: Add Snyk IAC scan and upload results to GitHub Security tab when the composite action is available.

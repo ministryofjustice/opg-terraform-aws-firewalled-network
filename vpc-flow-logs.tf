@@ -42,7 +42,6 @@ resource "aws_iam_policy" "vpc_flow_log_cloudwatch" {
   policy      = data.aws_iam_policy_document.vpc_flow_log_cloudwatch.json
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "vpc_flow_log_cloudwatch" {
   statement {
     sid = "AWSVPCFlowLogsPushToCloudWatch"
