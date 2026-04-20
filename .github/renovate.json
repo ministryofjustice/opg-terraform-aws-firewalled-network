@@ -9,6 +9,7 @@
   "labels": [
     "Renovate"
   ],
+  "minimumReleaseAge": "7 days",
   "packageRules": [
     {
       "groupName": "Minor and Patch Updates",
@@ -16,7 +17,6 @@
         "minor",
         "patch"
       ],
-      "minimumReleaseAge": "5 days",
       "addLabels": [
         "minor-and-patch"
       ],
@@ -29,7 +29,6 @@
       "matchUpdateTypes": [
         "major"
       ],
-      "minimumReleaseAge": "5 days",
       "addLabels": [
         "major"
       ],
