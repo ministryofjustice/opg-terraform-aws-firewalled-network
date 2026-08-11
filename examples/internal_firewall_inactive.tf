@@ -2,12 +2,15 @@
 module "network" {
   source                              = "github.com/ministryofjustice/opg-terraform-aws-firewalled-network?ref=v0.2.14"
   aws_networkfirewall_firewall_policy = aws_networkfirewall_firewall_policy.main
-  cidr                                = var.network_cidr_block
-  default_security_group_egress       = []
-  default_security_group_ingress      = []
-  enable_dns_hostnames                = true
-  enable_dns_support                  = true
-  network_firewall_enabled            = false
+  # Optional overrides:
+  # aws_region                        = "eu-west-1"
+  # aws_availability_zones            = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  cidr                           = var.network_cidr_block
+  default_security_group_egress  = []
+  default_security_group_ingress = []
+  enable_dns_hostnames           = true
+  enable_dns_support             = true
+  network_firewall_enabled       = false
 
   providers = {
     aws = aws.region

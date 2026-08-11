@@ -7,14 +7,14 @@ Example Usage for both Internal & Shared Firewall Deployments are in the example
 ## Requirements
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.10.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.5.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | 6.23.0 |
 
 ## Modules
@@ -24,7 +24,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_cloudwatch_log_group.flow_log](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.network_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_resource_policy.network_firewall_log_publishing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_resource_policy) | resource |
@@ -75,8 +75,10 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_aws_availability_zones"></a> [aws\_availability\_zones](#input\_aws\_availability\_zones) | If unset, AZs are discovered from the AWS provider region | `list(string)` | `null` | no |
 | <a name="input_aws_networkfirewall_firewall_policy"></a> [aws\_networkfirewall\_firewall\_policy](#input\_aws\_networkfirewall\_firewall\_policy) | an aws\_networkfirewall\_firewall\_policy resource containing the rule groups to be applied. | `any` | `null` | no |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | If unset, uses the provider’s current region. | `string` | `null` | no |
 | <a name="input_cidr"></a> [cidr](#input\_cidr) | n/a | `string` | `"10.0.0.0/16"` | no |
 | <a name="input_default_security_group_egress"></a> [default\_security\_group\_egress](#input\_default\_security\_group\_egress) | n/a | `list(map(string))` | `null` | no |
 | <a name="input_default_security_group_ingress"></a> [default\_security\_group\_ingress](#input\_default\_security\_group\_ingress) | n/a | `list(map(string))` | `null` | no |
@@ -99,7 +101,7 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_application_subnet_route_tables"></a> [application\_subnet\_route\_tables](#output\_application\_subnet\_route\_tables) | n/a |
 | <a name="output_application_subnets"></a> [application\_subnets](#output\_application\_subnets) | n/a |
 | <a name="output_data_subnets"></a> [data\_subnets](#output\_data\_subnets) | n/a |

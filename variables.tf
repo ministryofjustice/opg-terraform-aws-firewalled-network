@@ -1,13 +1,31 @@
 locals {
   application-name    = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
   name-prefix         = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
+  aws_region          = var.aws_region == null ? data.aws_region.current.name : var.aws_region
   use_shared_firewall = var.shared_firewall_configuration == null ? false : true
+}
+
+variable "aws_availability_zones" {
+  description = "If unset, AZs are discovered from the AWS provider region"
+  type        = list(string)
+  default     = null
+
+  validation {
+    condition     = var.aws_availability_zones == null || length(var.aws_availability_zones) >= 3
+    error_message = "aws_availability_zones must contain at least 3 availability zones when provided."
+  }
 }
 
 variable "aws_networkfirewall_firewall_policy" {
   description = "an aws_networkfirewall_firewall_policy resource containing the rule groups to be applied."
   default     = null
   type        = any
+}
+
+variable "aws_region" {
+  type        = string
+  description = "If unset, uses the provider’s current region."
+  default     = null
 }
 
 variable "cidr" {

@@ -1,6 +1,6 @@
 resource "aws_networkfirewall_firewall" "main" {
   count               = local.use_shared_firewall ? 0 : 3
-  name                = "${local.name-prefix}-${data.aws_availability_zones.all.names[count.index]}"
+  name                = "${local.name-prefix}-${local.aws_availability_zones[count.index]}"
   firewall_policy_arn = var.aws_networkfirewall_firewall_policy.arn
   vpc_id              = aws_vpc.main.id
   subnet_mapping {
