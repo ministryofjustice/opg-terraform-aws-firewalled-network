@@ -4,10 +4,20 @@ locals {
   use_shared_firewall = var.shared_firewall_configuration == null ? false : true
 }
 
+variable "aws_availability_zones" {
+  description = "Availability zones to use for subnet and firewall resources"
+  type        = list(string)
+}
+
 variable "aws_networkfirewall_firewall_policy" {
   description = "an aws_networkfirewall_firewall_policy resource containing the rule groups to be applied."
   default     = null
   type        = any
+}
+
+variable "aws_region" {
+  type        = string
+  description = "The AWS region"
 }
 
 variable "cidr" {
@@ -97,11 +107,6 @@ variable "network_firewall_enabled" {
   default     = true
   description = "Whether to route traffic through the Firewall"
   type        = bool
-}
-
-variable "aws_region" {
-  type        = string
-  description = "The AWS region"
 }
 
 variable "shared_firewall_configuration" {
