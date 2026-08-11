@@ -99,6 +99,11 @@ variable "network_firewall_enabled" {
   type        = bool
 }
 
+variable "aws_region" {
+  type        = string
+  description = "The AWS region"
+}
+
 variable "shared_firewall_configuration" {
   default     = null
   description = "Object for configuring the shared firewall. By providing this config you will switch from an internal VPC firewall to the shared firewall"
