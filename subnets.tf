@@ -1,4 +1,6 @@
 locals {
+  aws_availability_zones = var.aws_availability_zones == null ? data.aws_availability_zones.all.names : var.aws_availability_zones
+
   subnet_cidr_block_netnum = {
     lb          = 25
     nat         = 45
@@ -13,10 +15,10 @@ resource "aws_subnet" "lb" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
   cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.lb)
-  availability_zone               = var.aws_availability_zones[count.index]
+  availability_zone               = local.aws_availability_zones[count.index]
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
-  tags                            = { Name = "public-${var.aws_availability_zones[count.index]}" }
+  tags                            = { Name = "public-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_route_table_association" "lb" {
@@ -36,10 +38,10 @@ resource "aws_subnet" "nat" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
   cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.nat)
-  availability_zone               = var.aws_availability_zones[count.index]
+  availability_zone               = local.aws_availability_zones[count.index]
   map_public_ip_on_launch         = var.map_public_ip_on_launch
   assign_ipv6_address_on_creation = var.public_subnet_assign_ipv6_address_on_creation
-  tags                            = { Name = "nat-${var.aws_availability_zones[count.index]}" }
+  tags                            = { Name = "nat-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_route_table_association" "nat" {
@@ -61,10 +63,10 @@ resource "aws_subnet" "firewall" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
   cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.firewall)
-  availability_zone               = var.aws_availability_zones[count.index]
+  availability_zone               = local.aws_availability_zones[count.index]
   map_public_ip_on_launch         = false
   assign_ipv6_address_on_creation = false
-  tags                            = { Name = "firewall-${var.aws_availability_zones[count.index]}" }
+  tags                            = { Name = "firewall-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_route_table_association" "firewall" {
@@ -84,10 +86,10 @@ resource "aws_subnet" "application" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
   cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.application)
-  availability_zone               = var.aws_availability_zones[count.index]
+  availability_zone               = local.aws_availability_zones[count.index]
   map_public_ip_on_launch         = false
   assign_ipv6_address_on_creation = false
-  tags                            = { Name = "application-${var.aws_availability_zones[count.index]}" }
+  tags                            = { Name = "application-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_route_table_association" "application" {
@@ -107,10 +109,10 @@ resource "aws_subnet" "data" {
   count                           = 3
   vpc_id                          = aws_vpc.main.id
   cidr_block                      = cidrsubnet(aws_vpc.main.cidr_block, 7, count.index + local.subnet_cidr_block_netnum.data)
-  availability_zone               = var.aws_availability_zones[count.index]
+  availability_zone               = local.aws_availability_zones[count.index]
   map_public_ip_on_launch         = false
   assign_ipv6_address_on_creation = false
-  tags                            = { Name = "data-${var.aws_availability_zones[count.index]}" }
+  tags                            = { Name = "data-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_route_table_association" "data" {

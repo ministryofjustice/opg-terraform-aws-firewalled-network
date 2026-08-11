@@ -35,7 +35,7 @@ resource "aws_nat_gateway" "gw" {
   count         = 3
   allocation_id = aws_eip.nat[count.index].id
   subnet_id     = aws_subnet.nat[count.index].id
-  tags          = { Name = "${local.name-prefix}-nat-gateway-${var.aws_availability_zones[count.index]}" }
+  tags          = { Name = "${local.name-prefix}-nat-gateway-${local.aws_availability_zones[count.index]}" }
 }
 
 resource "aws_default_network_acl" "default" {
