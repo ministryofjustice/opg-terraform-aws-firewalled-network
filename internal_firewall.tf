@@ -69,7 +69,7 @@ resource "aws_networkfirewall_logging_configuration" "main" {
 
 resource "aws_cloudwatch_query_definition" "network_firewall_logs" {
   count = local.use_shared_firewall ? 0 : 1
-  name  = "Network Firewall Queries/Network Firewall Logs"
+  name  = "Network Firewall Queries/${local.name-prefix} Logs"
   log_group_names = [
     aws_cloudwatch_log_group.network_firewall[0].name
   ]
