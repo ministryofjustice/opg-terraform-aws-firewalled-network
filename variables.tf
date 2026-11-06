@@ -1,7 +1,7 @@
 locals {
   application-name    = replace(data.aws_default_tags.default_tags.tags.application, " ", "")
   name-prefix         = "${local.application-name}-${data.aws_default_tags.default_tags.tags.environment-name}"
-  aws_region          = var.aws_region == null ? data.aws_region.current.name : var.aws_region
+  aws_region          = var.aws_region == null ? data.aws_region.current.region : var.aws_region
   use_shared_firewall = var.shared_firewall_configuration == null ? false : true
 }
 
