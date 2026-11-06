@@ -125,3 +125,20 @@ variable "shared_firewall_configuration" {
     account_name = string
   })
 }
+
+
+variable "nat_gateway_egress_alarm_config" {
+  default = {
+    alarm_actions       = []
+    datapoints_to_alarm = "5"
+    evaluation_periods  = "5"
+    threshold           = "50000"
+  }
+  description = "Configuration Object for the NAT Gateway Egress Alarm"
+  type = object({
+    alarm_actions       = list(string)
+    datapoints_to_alarm = string
+    evaluation_periods  = string
+    threshold           = string
+  })
+}
