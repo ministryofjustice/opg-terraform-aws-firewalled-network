@@ -25,6 +25,7 @@ No modules.
 
 | Name | Type |
 | ---- | ---- |
+| [aws_cloudwatch_alarm_mute_rule.nat_gateway_bytes_out_mute_periods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_alarm_mute_rule) | resource |
 | [aws_cloudwatch_log_group.flow_log](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.network_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_resource_policy.network_firewall_log_publishing](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_resource_policy) | resource |
@@ -94,6 +95,7 @@ No modules.
 | <a name="input_instance_tenancy"></a> [instance\_tenancy](#input\_instance\_tenancy) | n/a | `string` | `"default"` | no |
 | <a name="input_map_public_ip_on_launch"></a> [map\_public\_ip\_on\_launch](#input\_map\_public\_ip\_on\_launch) | n/a | `bool` | `false` | no |
 | <a name="input_nat_gateway_egress_alarm_config"></a> [nat\_gateway\_egress\_alarm\_config](#input\_nat\_gateway\_egress\_alarm\_config) | Configuration Object for the NAT Gateway Egress Alarm | <pre>object({<br/>    alarm_actions       = list(string)<br/>    datapoints_to_alarm = string<br/>    evaluation_periods  = string<br/>    threshold           = string<br/>  })</pre> | <pre>{<br/>  "alarm_actions": [],<br/>  "datapoints_to_alarm": "5",<br/>  "evaluation_periods": "5",<br/>  "threshold": "50000"<br/>}</pre> | no |
+| <a name="input_nat_gateway_egress_alarm_mute_config"></a> [nat\_gateway\_egress\_alarm\_mute\_config](#input\_nat\_gateway\_egress\_alarm\_mute\_config) | List of blocks to configure action mute periods for the NAT Gateway Egress Alarm | <pre>list(<br/>    object({<br/>      description = string<br/>      cron        = string<br/>      duration    = string<br/>    })<br/>  )</pre> | `[]` | no |
 | <a name="input_network_firewall_cloudwatch_log_group_kms_key_id"></a> [network\_firewall\_cloudwatch\_log\_group\_kms\_key\_id](#input\_network\_firewall\_cloudwatch\_log\_group\_kms\_key\_id) | n/a | `string` | `null` | no |
 | <a name="input_network_firewall_cloudwatch_log_group_retention_in_days"></a> [network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days](#input\_network\_firewall\_cloudwatch\_log\_group\_retention\_in\_days) | Number of days you want to retain log events. | `number` | `null` | no |
 | <a name="input_network_firewall_enabled"></a> [network\_firewall\_enabled](#input\_network\_firewall\_enabled) | Whether to route traffic through the Firewall | `bool` | `true` | no |

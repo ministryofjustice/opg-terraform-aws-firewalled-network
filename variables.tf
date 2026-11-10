@@ -142,3 +142,15 @@ variable "nat_gateway_egress_alarm_config" {
     threshold           = string
   })
 }
+
+variable "nat_gateway_egress_alarm_mute_config" {
+  default     = []
+  description = "List of blocks to configure action mute periods for the NAT Gateway Egress Alarm"
+  type = list(
+    object({
+      description = string
+      cron        = string
+      duration    = string
+    })
+  )
+}
