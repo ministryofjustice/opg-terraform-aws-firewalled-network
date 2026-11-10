@@ -20,3 +20,18 @@ resource "aws_cloudwatch_metric_alarm" "nat_gateway_bytes_out" {
 
   treat_missing_data = "notBreaching"
 }
+
+resource "aws_cloudwatch_alarm_mute_rule" "nat_gateway_bytes_out_mute_periods" {
+  for_each    = { for idx, mute in var.nat_gateway_egress_alarm_mute_config : idx => mute }
+  name        = "NAT Gateway Egress Scheduled Mute Rule ${each.key}"
+  description = each.value.description
+  rule {
+    schedule {
+      duration   = each.value.duration
+      expression = each.value.cron
+    }
+  }
+  mute_targets {
+    alarm_names = [aws_cloudwatch_metric_alarm.nat_gateway_bytes_out.alarm_name]
+  }
+}
